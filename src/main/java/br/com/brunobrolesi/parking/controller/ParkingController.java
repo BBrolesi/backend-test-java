@@ -40,26 +40,29 @@ public class ParkingController {
 
     @GetMapping
     public ResponseEntity<List<ParkingResumedDto>> listParkings() {
-        List<Parking> parkings = parkingService.findAll();
-        return ResponseEntity.ok().body(ParkingResumedDto.converter(parkings));
+        try {
+            List<Parking> parkings = parkingService.findAll();
+            return ResponseEntity.ok().body(ParkingResumedDto.converter(parkings));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ParkingDto> listParkingById(@PathVariable Integer id) {
-        Optional<Parking> optional = Optional.ofNullable(parkingService.findById(id));
-        if(optional.isPresent())
-        {
-            return ResponseEntity.ok().body(new ParkingDto(optional.get()));
+        try {
+            ParkingDto parking = new ParkingDto(parkingService.findById(id));
+            return ResponseEntity.ok().body(parking);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteParking(@PathVariable Integer id) {
         Optional<Parking> optional = Optional.ofNullable(parkingService.findById(id));
-        if (optional.isPresent())
-        {
+        if (optional.isPresent()) {
             parkingService.delete(id);
             return ResponseEntity.ok().build();
         }
@@ -78,20 +81,18 @@ public class ParkingController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<ParkingDto> updateParking(@PathVariable Integer id, @RequestBody @Valid UpdateParkingForm form)
-    {
+    public ResponseEntity<ParkingDto> updateParking(@PathVariable Integer id, @RequestBody @Valid UpdateParkingForm form) {
         Optional<Parking> optional = Optional.ofNullable(parkingService.update(id, form.converterParking()));
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             return ResponseEntity.ok().body(new ParkingDto(optional.get()));
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{parkingId}/endereco/{addressId}")
-    public ResponseEntity<Address> listAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId)
-    {
+    public ResponseEntity<Address> listAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId) {
         Address obj = addressService.findByParkingIdAndAddressId(parkingId, addressId);
-        if(obj != null) return ResponseEntity.ok().body(obj);
+        if (obj != null) return ResponseEntity.ok().body(obj);
         return ResponseEntity.notFound().build();
     }
 
@@ -99,7 +100,7 @@ public class ParkingController {
     @Transactional
     public ResponseEntity<Address> updateAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId, @RequestBody @Valid UpdateAddressForm form) {
         Optional<Address> optional = Optional.ofNullable(addressService.update(parkingId, addressId, form.converterAddress()));
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             return ResponseEntity.ok().body(optional.get());
         }
         return ResponseEntity.notFound().build();
@@ -109,8 +110,7 @@ public class ParkingController {
     @Transactional
     public ResponseEntity<Void> deleteAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId) {
         boolean result = addressService.delete(parkingId, addressId);
-        if (result)
-        {
+        if (result) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
@@ -130,10 +130,9 @@ public class ParkingController {
     }
 
     @GetMapping("/{parkingId}/vaga/{parkingSpaceId}")
-    public ResponseEntity<ParkingSpace> findParkingSpaceById(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId)
-    {
+    public ResponseEntity<ParkingSpace> findParkingSpaceById(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
         ParkingSpace obj = parkingSpaceService.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
-        if(obj != null) return ResponseEntity.ok().body(obj);
+        if (obj != null) return ResponseEntity.ok().body(obj);
         return ResponseEntity.notFound().build();
     }
 
@@ -141,7 +140,7 @@ public class ParkingController {
     @Transactional
     public ResponseEntity<ParkingSpace> updateParkingSpace(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId, @RequestBody @Valid UpdateParkingSpaceForm form) {
         ParkingSpace obj = parkingSpaceService.update(parkingId, parkingSpaceId, form.converterParkingSpace());
-        if (obj != null){
+        if (obj != null) {
             return ResponseEntity.ok().body(obj);
         }
         return ResponseEntity.notFound().build();
@@ -151,8 +150,7 @@ public class ParkingController {
     @Transactional
     public ResponseEntity<Void> deleteParkingSpace(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
         boolean result = parkingSpaceService.delete(parkingId, parkingSpaceId);
-        if (result)
-        {
+        if (result) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
