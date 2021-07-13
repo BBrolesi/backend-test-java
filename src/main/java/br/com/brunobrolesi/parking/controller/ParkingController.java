@@ -39,13 +39,13 @@ public class ParkingController {
     private TicketService ticketService;
 
     @GetMapping
-    public List<ParkingResumedDto> listParkings() {
+    public ResponseEntity<List<ParkingResumedDto>> listParkings() {
         List<Parking> parkings = parkingService.findAll();
-        return ParkingResumedDto.converter(parkings);
+        return ResponseEntity.ok().body(ParkingResumedDto.converter(parkings));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ParkingDto> findParkingById(@PathVariable Integer id) {
+    public ResponseEntity<ParkingDto> listParkingById(@PathVariable Integer id) {
         Optional<Parking> optional = Optional.ofNullable(parkingService.findById(id));
         if(optional.isPresent())
         {
