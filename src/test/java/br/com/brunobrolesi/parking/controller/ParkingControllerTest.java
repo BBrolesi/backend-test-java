@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,8 +37,7 @@ class ParkingControllerTest {
         Parking parking = ParkingCreator.createValidParking();
 
         BDDMockito.when(parkingService.findAll()).thenReturn(parkingList);
-        BDDMockito.when(parkingService.findById(ArgumentMatchers.eq(1))).thenReturn(parking);
-//        BDDMockito.when(parkingService.findById(ArgumentMatchers.eq(2))).thenThrow();
+        BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenReturn(parking);
     }
 
     @Test
@@ -73,6 +73,30 @@ class ParkingControllerTest {
         Assertions.assertThat(returned.getCnpj()).isEqualTo(expected.getCnpj());
         Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
         Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
+    }
+
+    @Test
+    @DisplayName("ListParkings returns empty body and 404 status code when list is empty")
+    void listParkings_ReturnsEmptyBody_WhenNotFound() {
+        BDDMockito.when(parkingService.findAll()).thenThrow(RuntimeException.class);
+
+        List<ParkingResumedDto> returned = parkingController.listParkings().getBody();
+        HttpStatus statusCode = parkingController.listParkings().getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+    }
+
+    @Test
+    @DisplayName("listParkingById returns empty body and 404 status code didn't found the parking")
+    void listParkingById_ReturnsEmptyBody_WhenNotFound() {
+        BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
+
+        ParkingDto returned = parkingController.listParkingById(1).getBody();
+        HttpStatus statusCode = parkingController.listParkingById(1).getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(404);
     }
 
 }
