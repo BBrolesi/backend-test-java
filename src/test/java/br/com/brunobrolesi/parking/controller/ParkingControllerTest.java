@@ -1,5 +1,6 @@
 package br.com.brunobrolesi.parking.controller;
 
+import br.com.brunobrolesi.parking.controller.dto.ParkingDto;
 import br.com.brunobrolesi.parking.controller.dto.ParkingResumedDto;
 import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.service.ParkingService;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.Array;
@@ -28,16 +31,24 @@ class ParkingControllerTest {
     private ParkingService parkingService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         List<Parking> parkingList = new ArrayList<>(List.of(ParkingCreator.createValidParking()));
+        Parking parking = ParkingCreator.createValidParking();
+
         BDDMockito.when(parkingService.findAll()).thenReturn(parkingList);
+        BDDMockito.when(parkingService.findById(ArgumentMatchers.eq(1))).thenReturn(parking);
+//        BDDMockito.when(parkingService.findById(ArgumentMatchers.eq(2))).thenThrow();
     }
 
     @Test
-    @DisplayName("ListParkings returns a list of parkings when successful")
-    void listParkings_ReturnsListOfParkings_WhenSuccessful(){
+    @DisplayName("ListParkings returns a list of parkings and 200 status code when successful")
+    void listParkings_ReturnsListOfParkings_WhenSuccessful() {
         List<ParkingResumedDto> expected = ParkingResumedDto.converter(List.of(ParkingCreator.createValidParking()));
-        List<ParkingResumedDto> returned = parkingController.listParkings();
+        List<ParkingResumedDto> returned = parkingController.listParkings().getBody();
+        HttpStatus statusCode = parkingController.listParkings().getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
 
         Assertions.assertThat(returned).isNotNull();
         Assertions.assertThat(returned).isNotEmpty().hasSize(1);
@@ -45,6 +56,23 @@ class ParkingControllerTest {
         Assertions.assertThat(returned.get(0).getCnpj()).isEqualTo(expected.get(0).getCnpj());
         Assertions.assertThat(returned.get(0).getName()).isEqualTo(expected.get(0).getName());
         Assertions.assertThat(returned.get(0).getPhones()).isEqualTo(expected.get(0).getPhones());
+    }
+
+    @Test
+    @DisplayName("listParkingById returns the correspondent parking and 200 status code when successful")
+    void listParkingById_ReturnsTheCorrectParking_WhenSuccessful() {
+        ParkingDto expected = new ParkingDto(ParkingCreator.createValidParking());
+        ParkingDto returned = parkingController.listParkingById(1).getBody();
+        HttpStatus statusCode = parkingController.listParkingById(1).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getCnpj()).isEqualTo(expected.getCnpj());
+        Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
+        Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
     }
 
 }
