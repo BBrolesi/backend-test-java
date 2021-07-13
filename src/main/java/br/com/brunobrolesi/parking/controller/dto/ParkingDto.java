@@ -13,7 +13,7 @@ public class ParkingDto {
     private Integer id;
     private String cnpj;
     private String name;
-    private List<Address> addresses = new ArrayList<>();
+    private Address address;
     private Set<String> phones = new HashSet<>();
     private Integer carSpaces;
     private Integer motorcycleSpaces;
@@ -25,7 +25,7 @@ public class ParkingDto {
         this.id = parking.getId();
         this.cnpj = parking.getCnpj();
         this.name = parking.getName();
-        this.addresses = parking.getAddresses();
+        this.address = parking.getAddress();
         this.phones = parking.getPhones();
         this.parkingSpaces = parking.getParkingSpaces();
 
@@ -99,12 +99,12 @@ public class ParkingDto {
         this.name = name;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Set<String> getPhones() {

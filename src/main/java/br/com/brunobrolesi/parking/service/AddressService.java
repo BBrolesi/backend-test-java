@@ -51,7 +51,7 @@ public class AddressService {
         if (parking.isEmpty()) return null;
 
         address.setParking(parking.get());
-        parking.get().getAddresses().add(address);
+        parking.get().setAddress(address);
 
         parkingRepository.save(parking.get());
         return addressRepository.save(address);

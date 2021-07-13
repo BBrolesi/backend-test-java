@@ -107,7 +107,7 @@ public class ParkingForm {
 
         City city = new City(cityId, null, null);
         Address address = new Address(null, street, number, address_2, parking, city);
-        parking.getAddresses().add(address);
+        parking.setAddress(address);
 
         parking.getPhones().add(phone1);
         if(phone2 != null){

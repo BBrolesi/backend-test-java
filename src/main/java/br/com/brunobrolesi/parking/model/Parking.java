@@ -17,8 +17,8 @@ public class Parking implements Serializable {
     private String name;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "parking", orphanRemoval = true)
-    private List<Address> addresses = new ArrayList<>();
+    @OneToOne(mappedBy = "parking", orphanRemoval = true)
+    private Address address;
 
     @ElementCollection
     @CollectionTable(name = "phone")
@@ -28,7 +28,8 @@ public class Parking implements Serializable {
     @OneToMany(mappedBy = "parking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ParkingSpace> parkingSpaces = new ArrayList<>();
 
-    public Parking() {}
+    public Parking() {
+    }
 
     public Parking(Integer id, String cnpj, String name) {
         this.id = id;
@@ -68,12 +69,12 @@ public class Parking implements Serializable {
         this.name = name;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Set<String> getPhones() {
@@ -82,6 +83,10 @@ public class Parking implements Serializable {
 
     public void setPhones(Set<String> phones) {
         this.phones = phones;
+    }
+
+    public void addPhone(String number) {
+        this.phones.add(number);
     }
 
     @Override
@@ -100,6 +105,7 @@ public class Parking implements Serializable {
     public Integer getVehicleSpaceQuantity(VehicleType type) {
         return Math.toIntExact(parkingSpaces.stream().filter(element -> element.getVehicleType() == type).count());
     }
+
     public Integer getFreeVehicleSpaceQuantity(VehicleType type) {
         return Math.toIntExact(parkingSpaces.stream()
                 .filter(element -> (element.getState() == ParkingSpaceState.FREE && element.getVehicleType() == type)).count());

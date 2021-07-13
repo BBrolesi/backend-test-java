@@ -33,7 +33,7 @@ public class ParkingService {
     }
 
     public Parking insert(Parking parking) {
-        Address address = parking.getAddresses().get(0);
+        Address address = parking.getAddress();
         List<ParkingSpace> parkingSpaces = parking.getParkingSpaces();
 
         Parking inserted = parkingRepository.save(parking);

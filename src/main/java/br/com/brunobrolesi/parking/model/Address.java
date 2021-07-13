@@ -18,7 +18,7 @@ public class Address implements Serializable {
     private String address_2;
 
     @JsonBackReference
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "parking_id")
     private Parking parking;
 
