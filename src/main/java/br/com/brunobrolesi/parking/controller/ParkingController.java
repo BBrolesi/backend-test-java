@@ -61,12 +61,12 @@ public class ParkingController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteParking(@PathVariable Integer id) {
-        Optional<Parking> optional = Optional.ofNullable(parkingService.findById(id));
-        if (optional.isPresent()) {
+        try {
             parkingService.delete(id);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
