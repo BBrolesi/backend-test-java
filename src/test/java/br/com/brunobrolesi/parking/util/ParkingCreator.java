@@ -8,24 +8,30 @@ import br.com.brunobrolesi.parking.model.State;
 public class ParkingCreator {
 
     public static Parking createParking() {
-        Parking parking = new Parking(null, "555.555.555", "Estacionamento Central");
+        Parking parking = new Parking(null, ParkingData.getCnpj(), ParkingData.getName());
         State state = new State(null, "São Paulo");
         City city = new City(null, "Santos", state);
-        Address address = new Address(null,"Avenida Brasil","333",null, parking, city);
+        Address address = new Address(null, ParkingData.getStreet(),
+                ParkingData.getNumber(), ParkingData.getAddress_2(), parking, city);
 
+        parking.addPhone(ParkingData.getPhone1());
+        parking.addPhone(ParkingData.getPhone2());
         parking.setAddress(address);
 
         return parking;
     }
 
     public static Parking createValidParking() {
-        Parking parking = new Parking(1, "555.555.555", "Estacionamento Central");
+        Parking parking = new Parking(1, ParkingData.getCnpj(), ParkingData.getName());
         State state = new State(1, "São Paulo");
         City city = new City(1, "Santos", state);
-        Address address = new Address(1,"Avenida Brasil","333",null, parking, city);
+        Address address = new Address(1, ParkingData.getStreet(), ParkingData.getNumber(),
+                ParkingData.getAddress_2(), parking, city);
 
+        parking.addPhone(ParkingData.getPhone1());
+        parking.addPhone(ParkingData.getPhone2());
         parking.setAddress(address);
-        parking.addPhone("99999-0000");
+
         return parking;
     }
 
@@ -33,7 +39,8 @@ public class ParkingCreator {
         Parking parking = new Parking(1, "555.555.555", "Estacionamento Central");
         State state = new State(1, "São Paulo");
         City city = new City(1, "Santos", state);
-        Address address = new Address(1,"Avenida São Paulo","777",null, parking, city);
+        Address address = new Address(1, "Avenida São Paulo", "777", null, parking, city);
+        parking.addPhone("99999-0000");
 
         parking.setAddress(address);
 
