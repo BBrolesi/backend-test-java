@@ -7,6 +7,7 @@ import br.com.brunobrolesi.parking.repositories.AddressRepository;
 import br.com.brunobrolesi.parking.repositories.ParkingRepository;
 import br.com.brunobrolesi.parking.repositories.ParkingSpaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,11 @@ public class ParkingService {
     private ParkingSpaceRepository parkingSpaceRepository;
 
     public List<Parking> findAll() {
-        return parkingRepository.findAll();
+        List<Parking> parkingList = parkingRepository.findAll();
+
+        if(parkingList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+
+        return parkingList;
     }
 
     public Parking findById(Integer id) {
