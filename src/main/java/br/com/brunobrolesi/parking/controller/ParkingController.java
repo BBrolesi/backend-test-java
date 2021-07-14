@@ -12,6 +12,7 @@ import br.com.brunobrolesi.parking.service.ParkingService;
 import br.com.brunobrolesi.parking.service.ParkingSpaceService;
 import br.com.brunobrolesi.parking.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -71,12 +72,13 @@ public class ParkingController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ParkingDto> registerParking(@RequestBody @Valid ParkingForm form) {
-        Parking parking = form.converterParking();
-        Parking inserted = parkingService.insert(parking);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequestUri().path("/{id}").buildAndExpand(inserted.getId()).toUri();
-        return ResponseEntity.created(uri).body(new ParkingDto(inserted));
+    public ResponseEntity<ParkingDto> createParking(@RequestBody @Valid ParkingForm form) {
+        try {
+            ParkingDto created = new ParkingDto(parkingService.create(form.converterParking()));
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -116,18 +118,18 @@ public class ParkingController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{parkingId}/endereco")
-    @Transactional
-    public ResponseEntity<Address> registerAddress(@PathVariable Integer parkingId, @RequestBody @Valid AddressForm form) {
-        Address result = addressService.insert(parkingId, form.converterAddress());
-
-        if (result == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(result);
-
-    }
+//    @PostMapping("/{parkingId}/endereco")
+//    @Transactional
+//    public ResponseEntity<Address> registerAddress(@PathVariable Integer parkingId, @RequestBody @Valid AddressForm form) {
+//        Address result = addressService.insert(parkingId, form.converterAddress());
+//
+//        if (result == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        return ResponseEntity.ok().body(result);
+//
+//    }
 
     @GetMapping("/{parkingId}/vaga/{parkingSpaceId}")
     public ResponseEntity<ParkingSpace> findParkingSpaceById(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
