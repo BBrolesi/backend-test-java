@@ -6,6 +6,7 @@ import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.service.ParkingService;
 import br.com.brunobrolesi.parking.util.ParkingCreator;
 import br.com.brunobrolesi.parking.util.ParkingFormCreator;
+import br.com.brunobrolesi.parking.util.UpdateParkingFormCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,7 @@ class ParkingControllerTest {
         BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenReturn(parking);
         BDDMockito.doNothing().when(parkingService).delete(ArgumentMatchers.any());
         BDDMockito.when(parkingService.create(ParkingCreator.createParking())).thenReturn(ParkingCreator.createValidParking());
+        BDDMockito.when(parkingService.update(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(ParkingCreator.createValidUpdatedParking());
     }
 
     @Test
@@ -106,6 +108,23 @@ class ParkingControllerTest {
     }
 
     @Test
+    @DisplayName("updateParking returns the updated parking and 200 status code when successful")
+    void updateParking_ReturnsTheUpdatedParking_WhenSuccessful(){
+        ParkingDto expected = new ParkingDto(ParkingCreator.createValidUpdatedParking());
+        ParkingDto returned = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getBody();
+        HttpStatus statusCode = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
+        Assertions.assertThat(returned.getAddress()).isEqualTo(expected.getAddress());
+        Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
+    }
+
+    @Test
     @DisplayName("ListParkings returns empty body and 404 status code when list is empty")
     void listParkings_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(parkingService.findAll()).thenThrow(RuntimeException.class);
@@ -151,6 +170,20 @@ class ParkingControllerTest {
 
         Assertions.assertThat(statusCode).isNotNull();
         Assertions.assertThat(statusCode.value()).isEqualTo(422);
+        Assertions.assertThat(returned).isNull();
+    }
+
+    @Test
+    @DisplayName("updateParking returns empty body and 422 status code when fails")
+    void updateParking_ReturnsEmptyBody_WhenFails(){
+        BDDMockito.when(parkingService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(RuntimeException.class);
+
+        ParkingDto returned = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getBody();
+        HttpStatus statusCode = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(422);
+
         Assertions.assertThat(returned).isNull();
     }
 
