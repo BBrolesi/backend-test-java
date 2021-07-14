@@ -38,6 +38,7 @@ class ParkingControllerTest {
 
         BDDMockito.when(parkingService.findAll()).thenReturn(parkingList);
         BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenReturn(parking);
+        BDDMockito.doNothing().when(parkingService).delete(ArgumentMatchers.any());
     }
 
     @Test
@@ -76,6 +77,16 @@ class ParkingControllerTest {
     }
 
     @Test
+    @DisplayName("deleteParking returns empty body and 200 status code when successful")
+    void deleteParking_ReturnsEmptyBody_WhenSuccessful() {
+        Void returned = parkingController.deleteParking(1).getBody();
+        HttpStatus statusCode = parkingController.deleteParking(1).getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
+    }
+
+    @Test
     @DisplayName("ListParkings returns empty body and 404 status code when list is empty")
     void listParkings_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(parkingService.findAll()).thenThrow(RuntimeException.class);
@@ -88,12 +99,24 @@ class ParkingControllerTest {
     }
 
     @Test
-    @DisplayName("listParkingById returns empty body and 404 status code didn't found the parking")
+    @DisplayName("listParkingById returns empty body and 404 status code when didn't found the parking")
     void listParkingById_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
         ParkingDto returned = parkingController.listParkingById(1).getBody();
         HttpStatus statusCode = parkingController.listParkingById(1).getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+    }
+
+    @Test
+    @DisplayName("deleteParking returns empty body and 404 status code when didn't found the parking")
+    void deleteParking_ReturnsEmptyBody_WhenNotFound() {
+        BDDMockito.doThrow(RuntimeException.class).when(parkingService).delete(ArgumentMatchers.any());
+
+        Void returned = parkingController.deleteParking(1).getBody();
+        HttpStatus statusCode = parkingController.deleteParking(1).getStatusCode();
 
         Assertions.assertThat(returned).isNull();
         Assertions.assertThat(statusCode.value()).isEqualTo(404);
