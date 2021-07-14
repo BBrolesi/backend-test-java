@@ -36,11 +36,14 @@ public class ParkingCreator {
     }
 
     public static Parking createValidUpdatedParking() {
-        Parking parking = new Parking(1, "555.555.555", "Estacionamento Central");
+        Parking parking = new Parking(1, ParkingData.getCnpj(), ParkingData.getUpdatedName());
         State state = new State(1, "São Paulo");
         City city = new City(1, "Santos", state);
-        Address address = new Address(1, "Avenida São Paulo", "777", null, parking, city);
-        parking.addPhone("99999-0000");
+        Address address = new Address(1, ParkingData.getStreet(), ParkingData.getNumber(),
+                ParkingData.getAddress_2(), parking, city);
+
+        parking.addPhone(ParkingData.getUpdatedPhone1());
+        parking.addPhone(ParkingData.getPhone2());
 
         parking.setAddress(address);
 
