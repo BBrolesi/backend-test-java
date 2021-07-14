@@ -32,7 +32,7 @@ public class ParkingService {
         return null;
     }
 
-    public Parking insert(Parking parking) {
+    public Parking create(Parking parking) {
         Address address = parking.getAddress();
         List<ParkingSpace> parkingSpaces = parking.getParkingSpaces();
 
