@@ -57,11 +57,34 @@ class ParkingServiceTest {
     }
 
     @Test
+    @DisplayName("findById return parking when successful")
+    void findById_ReturnParking_WhenSuccessful() {
+        Parking expected = ParkingCreator.createValidParking();
+        Parking returned = parkingService.findById(1);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getCnpj()).isEqualTo(expected.getCnpj());
+        Assertions.assertThat(returned.getAddress()).isEqualTo(expected.getAddress());
+        Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
+        Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
+    }
+
+    @Test
     @DisplayName("findAll throws a exception when list is empty")
     void findAll_ThrowsException_WhenListIsEmpty() {
         BDDMockito.when(parkingRepository.findAll()).thenReturn(Collections.emptyList());
 
         Assertions.assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> this.parkingService.findAll());
+    }
+
+    @Test
+    @DisplayName("findById throws a exception when parking not found")
+    void findById_ThrowsException_WhenParkingIsNotFound() {
+        BDDMockito.when(parkingRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.parkingService.findById(1));
     }
 }
