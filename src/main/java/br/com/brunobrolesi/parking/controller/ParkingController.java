@@ -1,13 +1,11 @@
 package br.com.brunobrolesi.parking.controller;
 
 import br.com.brunobrolesi.parking.controller.form.*;
-import br.com.brunobrolesi.parking.model.Address;
 import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.controller.dto.ParkingDto;
 import br.com.brunobrolesi.parking.controller.dto.ParkingResumedDto;
 import br.com.brunobrolesi.parking.model.ParkingSpace;
 import br.com.brunobrolesi.parking.model.Ticket;
-import br.com.brunobrolesi.parking.service.AddressService;
 import br.com.brunobrolesi.parking.service.ParkingService;
 import br.com.brunobrolesi.parking.service.ParkingSpaceService;
 import br.com.brunobrolesi.parking.service.TicketService;
@@ -15,13 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/estabelecimento")
@@ -29,9 +24,6 @@ public class ParkingController {
 
     @Autowired
     private ParkingService parkingService;
-
-    @Autowired
-    private AddressService addressService;
 
     @Autowired
     private ParkingSpaceService parkingSpaceService;
@@ -84,52 +76,13 @@ public class ParkingController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<ParkingDto> updateParking(@PathVariable Integer id, @RequestBody @Valid UpdateParkingForm form) {
-        Optional<Parking> optional = Optional.ofNullable(parkingService.update(id, form.converterParking()));
-        if (optional.isPresent()) {
-            return ResponseEntity.ok().body(new ParkingDto(optional.get()));
+        try {
+            ParkingDto updated = new ParkingDto(parkingService.update(id, form.converterParking()));
+            return ResponseEntity.ok().body(updated);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().build();
         }
-        return ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/{parkingId}/endereco/{addressId}")
-    public ResponseEntity<Address> listAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId) {
-        Address obj = addressService.findByParkingIdAndAddressId(parkingId, addressId);
-        if (obj != null) return ResponseEntity.ok().body(obj);
-        return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{parkingId}/endereco/{addressId}")
-    @Transactional
-    public ResponseEntity<Address> updateAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId, @RequestBody @Valid UpdateAddressForm form) {
-        Optional<Address> optional = Optional.ofNullable(addressService.update(parkingId, addressId, form.converterAddress()));
-        if (optional.isPresent()) {
-            return ResponseEntity.ok().body(optional.get());
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{parkingId}/endereco/{addressId}")
-    @Transactional
-    public ResponseEntity<Void> deleteAddress(@PathVariable Integer parkingId, @PathVariable Integer addressId) {
-        boolean result = addressService.delete(parkingId, addressId);
-        if (result) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-//    @PostMapping("/{parkingId}/endereco")
-//    @Transactional
-//    public ResponseEntity<Address> registerAddress(@PathVariable Integer parkingId, @RequestBody @Valid AddressForm form) {
-//        Address result = addressService.insert(parkingId, form.converterAddress());
-//
-//        if (result == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        return ResponseEntity.ok().body(result);
-//
-//    }
 
     @GetMapping("/{parkingId}/vaga/{parkingSpaceId}")
     public ResponseEntity<ParkingSpace> findParkingSpaceById(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
