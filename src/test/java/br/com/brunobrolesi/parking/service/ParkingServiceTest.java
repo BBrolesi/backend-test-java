@@ -43,7 +43,7 @@ class ParkingServiceTest {
 
     @Test
     @DisplayName("findAll returns a list of parkings when successful")
-    void listParkings_ReturnsListOfParkings_WhenSuccessful() {
+    void findAll_ReturnsListOfParkings_WhenSuccessful() {
         List<Parking> expected = List.of(ParkingCreator.createValidParking());
         List<Parking> returned = parkingService.findAll();
 
