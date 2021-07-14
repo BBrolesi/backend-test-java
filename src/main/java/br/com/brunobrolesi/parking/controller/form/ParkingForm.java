@@ -11,10 +11,7 @@ public class ParkingForm {
     private String cnpj;
     private String name;
 
-    private String street;
-    private String number;
-    private String address_2;
-    private Integer cityId;
+    private AddressForm address;
 
     private String phone1;
     private String phone2;
@@ -54,36 +51,12 @@ public class ParkingForm {
         this.name = name;
     }
 
-    public String getStreet() {
-        return street;
+    public AddressForm getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getAddress_2() {
-        return address_2;
-    }
-
-    public void setAddress_2(String address_2) {
-        this.address_2 = address_2;
-    }
-
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Integer cityID) {
-        this.cityId = cityID;
+    public void setAddress(AddressForm address) {
+        this.address = address;
     }
 
     public String getPhone1() {
@@ -105,8 +78,9 @@ public class ParkingForm {
     public Parking converterParking() {
         Parking parking = new Parking(null, cnpj, name);
 
-        City city = new City(cityId, null, null);
-        Address address = new Address(null, street, number, address_2, parking, city);
+        Address address = this.address.converterAddress();
+
+        address.setParking(parking);
         parking.setAddress(address);
 
         parking.getPhones().add(phone1);
