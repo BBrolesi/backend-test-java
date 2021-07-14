@@ -26,15 +26,17 @@ public class ParkingService {
     public List<Parking> findAll() {
         List<Parking> parkingList = parkingRepository.findAll();
 
-        if(parkingList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+        if (parkingList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
 
         return parkingList;
     }
 
     public Parking findById(Integer id) {
-        Optional<Parking> obj = parkingRepository.findById(id);
-        if(obj.isPresent()) return obj.get();
-        return null;
+        Optional<Parking> optional = parkingRepository.findById(id);
+
+        if (optional.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+
+        return optional.get();
     }
 
     public Parking create(Parking parking) {
@@ -45,14 +47,16 @@ public class ParkingService {
         addressRepository.save(address);
         parkingSpaceRepository.saveAll(parkingSpaces);
 
-        return  inserted;
+        return inserted;
     }
 
-    public void delete(Integer id) { parkingRepository.deleteById(id);}
+    public void delete(Integer id) {
+        parkingRepository.deleteById(id);
+    }
 
     public Parking update(Integer id, Parking obj) {
         Optional<Parking> entity = parkingRepository.findById(id);
-        if(entity.isPresent()) {
+        if (entity.isPresent()) {
             updateData(entity.get(), obj);
             return parkingRepository.save(entity.get());
         }
