@@ -34,7 +34,7 @@ class ParkingControllerTest {
     private ParkingService parkingService;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         List<Parking> parkingList = new ArrayList<>(List.of(ParkingCreator.createValidParking()));
         Parking parking = ParkingCreator.createValidParking();
 

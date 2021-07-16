@@ -36,7 +36,7 @@ class ParkingServiceTest {
     private AddressService addressService;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         ArrayList<Parking> parkingList = new ArrayList<>(List.of(ParkingCreator.createValidParking()));
         Optional<Parking> parking = Optional.of(ParkingCreator.createValidParking());
 
