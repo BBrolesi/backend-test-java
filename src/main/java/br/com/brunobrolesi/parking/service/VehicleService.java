@@ -41,6 +41,10 @@ public class VehicleService {
     }
 
     public void delete(Integer id) {
+        Optional<Vehicle> optional = repository.findById(id);
+
+        if (optional.isEmpty()) throw new IllegalArgumentException("Este id é invalido");
+
         repository.deleteById(id);
     }
 
