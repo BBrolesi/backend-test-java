@@ -33,6 +33,10 @@ public class VehicleService {
     }
 
     public Vehicle create(Vehicle obj) {
+        Optional<Vehicle> optional = repository.findByLicensePlate(obj.getLicensePlate());
+
+        if(optional.isPresent()) throw new IllegalArgumentException("Placa já cadastrada");
+
         return repository.save(obj);
     }
 
