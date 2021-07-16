@@ -71,11 +71,11 @@ public class VehiclesController {
     @Transactional
     public ResponseEntity<VehicleDto> update(@PathVariable Integer id, @RequestBody @Valid UpdateVehicleForm form)
     {
-            Optional<Vehicle> optional = Optional.ofNullable(service.update(id, form.converterVehicle()));
-
-            if(optional.isPresent()) {
-                return ResponseEntity.ok().body(new VehicleDto(optional.get()));
-            }
-        return ResponseEntity.notFound().build();
+        try {
+            VehicleDto vehicle = new VehicleDto(service.update(id, form.converterVehicle()));
+            return ResponseEntity.ok().body(vehicle);
+        } catch (Exception exception) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 }
