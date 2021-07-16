@@ -8,6 +8,7 @@ import br.com.brunobrolesi.parking.repositories.ParkingSpaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,5 +54,9 @@ public class ParkingSpaceService {
         parkingSpace.setParking(parking.get());
         
         return parkingSpaceRepository.save(parkingSpace);
+    }
+
+    public List<ParkingSpace> createMany(List<ParkingSpace> parkingSpaces) {
+        return parkingSpaceRepository.saveAll(parkingSpaces);
     }
 }
