@@ -25,24 +25,28 @@ public class VehiclesController {
     private VehicleService service;
 
     @GetMapping
-    public List<VehicleDto> listVehicles() {
-        List<Vehicle> vehicles = service.findAll();
-        return VehicleDto.converter(vehicles);
+    public ResponseEntity<List<VehicleDto>> list() {
+        try {
+            List<Vehicle> vehicles = service.findAll();
+            return ResponseEntity.ok().body(VehicleDto.converter(vehicles));
+        } catch (Exception exception) {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleDto> findVehicleById(@PathVariable Integer id) {
-        Optional<Vehicle> obj = Optional.ofNullable(service.findById(id));
-        if(obj.isPresent())
-        {
-            return ResponseEntity.ok().body(new VehicleDto(obj.get()));
-        }
+    public ResponseEntity<VehicleDto> listById(@PathVariable Integer id) {
+        try {
+            Vehicle vehicle = service.findById(id);
+            return ResponseEntity.ok().body(new VehicleDto(vehicle));
+        } catch (Exception exception){
             return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<VehicleDto> registerVehicle(@RequestBody @Valid VehicleForm form) {
+    public ResponseEntity<VehicleDto> create(@RequestBody @Valid VehicleForm form) {
         Vehicle vehicle = form.converter();
         service.insert(vehicle);
         URI uri = ServletUriComponentsBuilder
@@ -52,7 +56,7 @@ public class VehiclesController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteVehicle(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         Optional<Vehicle> optional = Optional.ofNullable(service.findById(id));
         if (optional.isPresent())
         {
@@ -64,7 +68,7 @@ public class VehiclesController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<VehicleDto> updateVehicle(@PathVariable Integer id, @RequestBody @Valid UpdateVehicleForm form)
+    public ResponseEntity<VehicleDto> update(@PathVariable Integer id, @RequestBody @Valid UpdateVehicleForm form)
     {
             Optional<Vehicle> optional = Optional.ofNullable(service.update(id, form.converterVehicle()));
 
