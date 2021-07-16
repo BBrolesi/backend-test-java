@@ -80,8 +80,8 @@ class VehicleServiceTest {
     }
 
     @Test
-    @DisplayName("create returns the created parking when successful")
-    void create_ReturnsCreatedParking_WhenSuccessful() {
+    @DisplayName("create returns the created vehicle when successful")
+    void create_ReturnsCreatedVehicle_WhenSuccessful() {
         Vehicle expected = VehicleCreator.createValidVehicle();
         Vehicle returned = vehicleService.create(VehicleCreator.createVehicle());
 
