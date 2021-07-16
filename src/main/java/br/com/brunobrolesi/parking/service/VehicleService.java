@@ -25,7 +25,7 @@ public class VehicleService {
         return null;
     }
 
-    public Vehicle insert(Vehicle obj) {
+    public Vehicle create(Vehicle obj) {
         return repository.save(obj);
     }
 
