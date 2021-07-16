@@ -1,22 +1,28 @@
 package br.com.brunobrolesi.parking.controller.form;
 
 import br.com.brunobrolesi.parking.model.*;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ParkingForm {
-
+    @NotNull @NotEmpty
     private String cnpj;
+    @NotNull @NotEmpty @Length(min = 5, max = 50)
     private String name;
-
+    @Valid
     private AddressForm address;
-
+    @NotNull @NotEmpty
     private String phone1;
     private String phone2;
-
+    @NotNull
     private Integer carSpaces;
+    @NotNull
     private Integer motorcycleSpaces;
 
     public Integer getCarSpaces() {
