@@ -59,13 +59,12 @@ public class VehiclesController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        Optional<Vehicle> optional = Optional.ofNullable(service.findById(id));
-        if (optional.isPresent())
-        {
+        try {
             service.delete(id);
             return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
