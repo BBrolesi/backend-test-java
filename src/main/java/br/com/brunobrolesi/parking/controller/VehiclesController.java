@@ -7,6 +7,7 @@ import br.com.brunobrolesi.parking.controller.form.UpdateVehicleForm;
 import br.com.brunobrolesi.parking.controller.form.VehicleForm;
 import br.com.brunobrolesi.parking.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -47,11 +48,12 @@ public class VehiclesController {
     @PostMapping
     @Transactional
     public ResponseEntity<VehicleDto> create(@RequestBody @Valid VehicleForm form) {
-        Vehicle vehicle = form.converter();
-        service.insert(vehicle);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequestUri().path("/{id}").buildAndExpand(vehicle.getId()).toUri();
-        return ResponseEntity.created(uri).body(new VehicleDto(vehicle));
+        try {
+            VehicleDto created = new VehicleDto(service.create(form.converter()));
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 
     @DeleteMapping("/{id}")
