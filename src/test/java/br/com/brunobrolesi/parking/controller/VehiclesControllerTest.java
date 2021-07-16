@@ -43,6 +43,7 @@ class VehiclesControllerTest {
         BDDMockito.when(vehicleService.findAll()).thenReturn(vehicleList);
         BDDMockito.when(vehicleService.findById(ArgumentMatchers.any())).thenReturn(vehicle);
         BDDMockito.when(vehicleService.create(ArgumentMatchers.any())).thenReturn(vehicle);
+        BDDMockito.doNothing().when(vehicleService).delete(ArgumentMatchers.any());
     }
 
 
@@ -108,6 +109,16 @@ class VehiclesControllerTest {
     }
 
     @Test
+    @DisplayName("delete returns empty body and 200 status code when successful")
+    void delete_ReturnsEmptyBody_WhenSuccessful() {
+        Void returned = vehiclesController.delete(1).getBody();
+        HttpStatus statusCode = vehiclesController.delete(1).getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
+    }
+
+    @Test
     @DisplayName("list returns empty body and 204 status code when list is empty")
     void list_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(vehicleService.findAll()).thenThrow(RuntimeException.class);
@@ -142,6 +153,18 @@ class VehiclesControllerTest {
         Assertions.assertThat(statusCode).isNotNull();
         Assertions.assertThat(statusCode.value()).isEqualTo(422);
         Assertions.assertThat(returned).isNull();
+    }
+
+    @Test
+    @DisplayName("delete returns empty body and 404 status code when didn't found the vehicle")
+    void delete_ReturnsEmptyBody_WhenNotFound() {
+        BDDMockito.doThrow(RuntimeException.class).when(vehicleService).delete(ArgumentMatchers.any());
+
+        Void returned = vehiclesController.delete(1).getBody();
+        HttpStatus statusCode = vehiclesController.delete(1).getStatusCode();
+
+        Assertions.assertThat(returned).isNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(404);
     }
 
 
