@@ -4,6 +4,7 @@ import br.com.brunobrolesi.parking.model.Vehicle;
 import br.com.brunobrolesi.parking.model.VehicleType;
 import br.com.brunobrolesi.parking.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +17,19 @@ public class VehicleService {
     private VehicleRepository repository;
 
     public List<Vehicle> findAll() {
-        return repository.findAll();
+        List <Vehicle> vehicleList = repository.findAll();
+
+        if (vehicleList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+
+        return vehicleList;
     }
 
     public Vehicle findById(Integer id) {
-        Optional<Vehicle> obj = repository.findById(id);
-        if(obj.isPresent()) return obj.get();
-        return null;
+        Optional<Vehicle> optional = repository.findById(id);
+
+        if(optional.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+
+        return optional.get();
     }
 
     public Vehicle create(Vehicle obj) {
