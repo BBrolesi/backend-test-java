@@ -95,6 +95,13 @@ class VehicleServiceTest {
     }
 
     @Test
+    @DisplayName("delete return void when successful")
+    void delete_ReturnsVoid_WhenSuccessful() {
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> this.vehicleService.delete(1));
+    }
+
+    @Test
     @DisplayName("findAll throws an exception when list is empty")
     void findAll_ThrowsException_WhenListIsEmpty() {
         BDDMockito.when(vehicleRepository.findAll()).thenReturn(Collections.emptyList());
@@ -122,6 +129,14 @@ class VehicleServiceTest {
                 .isThrownBy(() -> this.vehicleService.create(VehicleCreator.createVehicle()));
     }
 
+    @Test
+    @DisplayName("delete throws a exception when id is invalid")
+    void delete_ThrowsException_WhenIdNotValid() {
+        BDDMockito.when(vehicleRepository.findById(ArgumentMatchers.any()))
+                .thenReturn(Optional.empty());
 
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.vehicleService.delete(1232));
+    }
 
 }
