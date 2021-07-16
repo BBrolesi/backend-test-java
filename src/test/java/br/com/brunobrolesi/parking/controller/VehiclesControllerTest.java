@@ -7,6 +7,7 @@ import br.com.brunobrolesi.parking.controller.form.VehicleForm;
 import br.com.brunobrolesi.parking.model.Vehicle;
 import br.com.brunobrolesi.parking.service.VehicleService;
 import br.com.brunobrolesi.parking.util.ParkingCreator;
+import br.com.brunobrolesi.parking.util.UpdateVehicleFormCreator;
 import br.com.brunobrolesi.parking.util.VehicleCreator;
 import br.com.brunobrolesi.parking.util.VehicleFormCreator;
 import org.assertj.core.api.Assertions;
@@ -44,6 +45,8 @@ class VehiclesControllerTest {
         BDDMockito.when(vehicleService.findById(ArgumentMatchers.any())).thenReturn(vehicle);
         BDDMockito.when(vehicleService.create(ArgumentMatchers.any())).thenReturn(vehicle);
         BDDMockito.doNothing().when(vehicleService).delete(ArgumentMatchers.any());
+        BDDMockito.when(vehicleService.update(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .thenReturn(VehicleCreator.createValidUpdatedVehicle());
     }
 
 
@@ -119,6 +122,26 @@ class VehiclesControllerTest {
     }
 
     @Test
+    @DisplayName("update returns the updated vehicle and 200 status code when successful")
+    void update_ReturnsTheUpdatedVehicle_WhenSuccessful() {
+        VehicleDto expected = new VehicleDto(VehicleCreator.createValidUpdatedVehicle());
+        VehicleDto returned = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getBody();
+        HttpStatus statusCode = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(200);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getManufacturer()).isEqualTo(expected.getManufacturer());
+        Assertions.assertThat(returned.getModel()).isEqualTo(expected.getModel());
+        Assertions.assertThat(returned.getYear()).isEqualTo(expected.getYear());
+        Assertions.assertThat(returned.getColor()).isEqualTo(expected.getColor());
+        Assertions.assertThat(returned.getLicensePlate()).isEqualTo(expected.getLicensePlate());
+        Assertions.assertThat(returned.getType()).isEqualTo(expected.getType());
+    }
+
+    @Test
     @DisplayName("list returns empty body and 204 status code when list is empty")
     void list_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(vehicleService.findAll()).thenThrow(RuntimeException.class);
@@ -165,6 +188,19 @@ class VehiclesControllerTest {
 
         Assertions.assertThat(returned).isNull();
         Assertions.assertThat(statusCode.value()).isEqualTo(404);
+    }
+
+    @Test
+    @DisplayName("update returns empty body and 422 status code when fails")
+    void update_ReturnsEmptyBody_WhenFails() {
+        BDDMockito.when(vehicleService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(RuntimeException.class);
+
+        VehicleDto returned = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getBody();
+        HttpStatus statusCode = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(422);
+        Assertions.assertThat(returned).isNull();
     }
 
 
