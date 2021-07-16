@@ -2,6 +2,7 @@ package br.com.brunobrolesi.parking.service;
 
 import br.com.brunobrolesi.parking.controller.dto.ParkingResumedDto;
 import br.com.brunobrolesi.parking.model.Parking;
+import br.com.brunobrolesi.parking.repositories.AddressRepository;
 import br.com.brunobrolesi.parking.repositories.ParkingRepository;
 import br.com.brunobrolesi.parking.util.ParkingCreator;
 import org.assertj.core.api.Assertions;
@@ -29,6 +30,10 @@ class ParkingServiceTest {
 
     @Mock
     private ParkingRepository parkingRepository;
+    @Mock
+    private ParkingSpaceService parkingSpaceService;
+    @Mock
+    private AddressService addressService;
 
     @BeforeEach
     void setUp() {
@@ -57,10 +62,50 @@ class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("findById return parking when successful")
-    void findById_ReturnParking_WhenSuccessful() {
+    @DisplayName("findById returns the correct parking when successful")
+    void findById_ReturnsParking_WhenSuccessful() {
         Parking expected = ParkingCreator.createValidParking();
         Parking returned = parkingService.findById(1);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getCnpj()).isEqualTo(expected.getCnpj());
+        Assertions.assertThat(returned.getAddress()).isEqualTo(expected.getAddress());
+        Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
+        Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
+    }
+
+    @Test
+    @DisplayName("create returns the created parking when successful")
+    void create_ReturnsCreatedParking_WhenSuccessful() {
+        BDDMockito.when(parkingSpaceService.createMany(ArgumentMatchers.any())).thenReturn(ParkingCreator.createValidParking().getParkingSpaces());
+        BDDMockito.when(addressService.create(ArgumentMatchers.any())).thenReturn(ParkingCreator.createValidParking().getAddress());
+
+        Parking expected = ParkingCreator.createValidParking();
+        Parking returned = parkingService.create(ParkingCreator.createParking());
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getCnpj()).isEqualTo(expected.getCnpj());
+        Assertions.assertThat(returned.getAddress()).isEqualTo(expected.getAddress());
+        Assertions.assertThat(returned.getName()).isEqualTo(expected.getName());
+        Assertions.assertThat(returned.getPhones()).isEqualTo(expected.getPhones());
+    }
+
+    @Test
+    @DisplayName("delete return void when successful")
+    void delete_ReturnsVoid_WhenSuccessful() {
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> this.parkingService.delete(1));
+    }
+
+    @Test
+    @DisplayName("update return updated parking when successful")
+    void update_ReturnsUpdatedParking_WhenSuccessful() {
+        BDDMockito.when(parkingRepository.save(ArgumentMatchers.any())).thenReturn(ParkingCreator.createValidUpdatedParking());
+
+        Parking expected = ParkingCreator.createValidUpdatedParking();
+        Parking returned = parkingService.update(1, ParkingCreator.createParking());
 
         Assertions.assertThat(returned).isNotNull();
         Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
@@ -87,4 +132,36 @@ class ParkingServiceTest {
         Assertions.assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> this.parkingService.findById(1));
     }
+
+    @Test
+    @DisplayName("create throws a exception when cityId is invalid")
+    void create_ThrowsException_WhenCityIdNotValid() {
+        BDDMockito.when(parkingSpaceService.createMany(ArgumentMatchers.any())).thenReturn(ParkingCreator.createValidParking().getParkingSpaces());
+        BDDMockito.when(addressService.create(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
+
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.parkingService.create(ParkingCreator.createParking()));
+    }
+
+    @Test
+    @DisplayName("delete throws a exception when id is invalid")
+    void delete_ThrowsException_WhenIdNotValid() {
+        BDDMockito.when(parkingRepository.findById(ArgumentMatchers.any()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.parkingService.delete(1232));
+    }
+
+    @Test
+    @DisplayName("update throws a exception when id is invalid")
+    void update_ThrowsException_WhenIdNotValid() {
+        BDDMockito.when(parkingRepository.findById(ArgumentMatchers.any()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.parkingService.update(22, ParkingCreator.createParking()));
+    }
+
+
 }
