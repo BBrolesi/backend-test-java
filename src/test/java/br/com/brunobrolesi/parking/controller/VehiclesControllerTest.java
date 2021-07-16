@@ -3,10 +3,12 @@ package br.com.brunobrolesi.parking.controller;
 import br.com.brunobrolesi.parking.controller.dto.ParkingDto;
 import br.com.brunobrolesi.parking.controller.dto.ParkingResumedDto;
 import br.com.brunobrolesi.parking.controller.dto.VehicleDto;
+import br.com.brunobrolesi.parking.controller.form.VehicleForm;
 import br.com.brunobrolesi.parking.model.Vehicle;
 import br.com.brunobrolesi.parking.service.VehicleService;
 import br.com.brunobrolesi.parking.util.ParkingCreator;
 import br.com.brunobrolesi.parking.util.VehicleCreator;
+import br.com.brunobrolesi.parking.util.VehicleFormCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +42,7 @@ class VehiclesControllerTest {
 
         BDDMockito.when(vehicleService.findAll()).thenReturn(vehicleList);
         BDDMockito.when(vehicleService.findById(ArgumentMatchers.any())).thenReturn(vehicle);
+        BDDMockito.when(vehicleService.create(ArgumentMatchers.any())).thenReturn(vehicle);
     }
 
 
@@ -85,6 +88,26 @@ class VehiclesControllerTest {
     }
 
     @Test
+    @DisplayName("create returns the created vehicle and 201 status code when successful")
+    void create_ReturnsTheCreatedVehicle_WhenSuccessful() {
+        VehicleDto expected = new VehicleDto(VehicleCreator.createValidVehicle());
+        VehicleDto returned = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getBody();
+        HttpStatus statusCode = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(201);
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getManufacturer()).isEqualTo(expected.getManufacturer());
+        Assertions.assertThat(returned.getModel()).isEqualTo(expected.getModel());
+        Assertions.assertThat(returned.getYear()).isEqualTo(expected.getYear());
+        Assertions.assertThat(returned.getColor()).isEqualTo(expected.getColor());
+        Assertions.assertThat(returned.getLicensePlate()).isEqualTo(expected.getLicensePlate());
+        Assertions.assertThat(returned.getType()).isEqualTo(expected.getType());
+    }
+
+    @Test
     @DisplayName("list returns empty body and 204 status code when list is empty")
     void list_ReturnsEmptyBody_WhenNotFound() {
         BDDMockito.when(vehicleService.findAll()).thenThrow(RuntimeException.class);
@@ -106,6 +129,19 @@ class VehiclesControllerTest {
 
         Assertions.assertThat(returned).isNull();
         Assertions.assertThat(statusCode.value()).isEqualTo(404);
+    }
+
+    @Test
+    @DisplayName("create returns empty body and 422 status code when fails")
+    void create_ReturnsEmptyBody_WhenFails() {
+        BDDMockito.when(vehicleService.create(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
+
+        VehicleDto returned = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getBody();
+        HttpStatus statusCode = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getStatusCode();
+
+        Assertions.assertThat(statusCode).isNotNull();
+        Assertions.assertThat(statusCode.value()).isEqualTo(422);
+        Assertions.assertThat(returned).isNull();
     }
 
 
