@@ -49,12 +49,14 @@ public class VehicleService {
     }
 
     public Vehicle update(Integer id, Vehicle obj) {
-        Optional<Vehicle> entity = Optional.of(repository.getOne(id));
-        if (entity.isPresent()){
-            updateData(entity.get(), obj);
-            return repository.save(entity.get());
+        Optional<Vehicle> entity = repository.findById(id);
+
+        if (entity.isEmpty()){
+            throw new IllegalArgumentException("Este id é inválido");
         }
-        return null;
+
+        updateData(entity.get(), obj);
+        return repository.save(entity.get());
     }
 
     private void updateData(Vehicle entity, Vehicle obj) {
@@ -63,7 +65,6 @@ public class VehicleService {
         entity.setModel(obj.getModel());
         entity.setYear(obj.getYear());
         entity.setColor(obj.getColor());
-        entity.setLicensePlate(obj.getLicensePlate());
         entity.setType(obj.getType());
     }
 
