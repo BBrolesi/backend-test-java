@@ -2,8 +2,6 @@ package br.com.brunobrolesi.parking.controller.form;
 
 import br.com.brunobrolesi.parking.model.Vehicle;
 import br.com.brunobrolesi.parking.model.VehicleType;
-import br.com.brunobrolesi.parking.service.VehicleService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -18,8 +16,6 @@ public class UpdateVehicleForm {
     private String year;
     @NotNull @NotEmpty
     private String color;
-    @NotNull @NotEmpty
-    private String licensePlate;
     @NotNull
     private Integer type;
 
@@ -55,14 +51,6 @@ public class UpdateVehicleForm {
         this.color = color;
     }
 
-    public String getLicensePlate() {
-        return licensePlate;
-    }
-
-    public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
-    }
-
     public Integer getType() {
         return type;
     }
@@ -72,7 +60,7 @@ public class UpdateVehicleForm {
     }
 
     public Vehicle converterVehicle () {
-        Vehicle vehicle = new Vehicle(null, manufacturer, model, year, color, licensePlate, VehicleType.toEnum(type));
+        Vehicle vehicle = new Vehicle(null, manufacturer, model, year, color, null, VehicleType.toEnum(type));
         return vehicle;
     }
 
