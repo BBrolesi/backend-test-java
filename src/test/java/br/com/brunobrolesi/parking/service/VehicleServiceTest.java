@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -102,6 +101,24 @@ class VehicleServiceTest {
     }
 
     @Test
+    @DisplayName("update return updated vehicle when successful")
+    void update_ReturnsUpdatedVehicle_WhenSuccessful() {
+        BDDMockito.when(vehicleRepository.save(ArgumentMatchers.any()))
+                .thenReturn(VehicleCreator.createValidUpdatedVehicle());
+
+        Vehicle expected = VehicleCreator.createValidUpdatedVehicle();
+        Vehicle returned = vehicleService.update(1, VehicleCreator.createVehicle());
+
+        Assertions.assertThat(returned).isNotNull();
+        Assertions.assertThat(returned.getId()).isEqualTo(expected.getId());
+        Assertions.assertThat(returned.getManufacturer()).isEqualTo(expected.getManufacturer());
+        Assertions.assertThat(returned.getModel()).isEqualTo(expected.getModel());
+        Assertions.assertThat(returned.getYear()).isEqualTo(expected.getYear());
+        Assertions.assertThat(returned.getColor()).isEqualTo(expected.getColor());
+        Assertions.assertThat(returned.getLicensePlate()).isEqualTo(expected.getLicensePlate());
+    }
+
+    @Test
     @DisplayName("findAll throws an exception when list is empty")
     void findAll_ThrowsException_WhenListIsEmpty() {
         BDDMockito.when(vehicleRepository.findAll()).thenReturn(Collections.emptyList());
@@ -139,4 +156,13 @@ class VehicleServiceTest {
                 .isThrownBy(() -> this.vehicleService.delete(1232));
     }
 
+    @Test
+    @DisplayName("update throws a exception when id is invalid")
+    void update_ThrowsException_WhenIdNotValid() {
+        BDDMockito.when(vehicleRepository.findById(ArgumentMatchers.any()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> this.vehicleService.update(123, ArgumentMatchers.any()));
+    }
 }

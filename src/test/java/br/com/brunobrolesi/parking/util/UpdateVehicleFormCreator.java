@@ -9,7 +9,6 @@ public class UpdateVehicleFormCreator {
         vehicleForm.setModel(VehicleData.getModel());
         vehicleForm.setYear(VehicleData.getYear());
         vehicleForm.setColor(VehicleData.getColor());
-        vehicleForm.setLicensePlate(VehicleData.getLicensePlate());
         vehicleForm.setType(VehicleData.getType().getId());
 
         return vehicleForm;

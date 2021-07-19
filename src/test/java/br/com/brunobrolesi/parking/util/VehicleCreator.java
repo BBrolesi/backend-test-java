@@ -28,9 +28,9 @@ public class VehicleCreator {
         return new Vehicle(1,
                 VehicleData.getManufacturer(),
                 VehicleData.getModel(),
-                VehicleData.getYear(),
+                VehicleData.getUpdatedYear(),
                 VehicleData.getColor(),
-                VehicleData.getUpdatedLicensePlate(),
+                VehicleData.getLicensePlate(),
                 VehicleData.getType());
     }
 }

@@ -13,6 +13,9 @@ public class VehicleData {
     public static String getYear() {
         return "2018";
     }
+    public static String getUpdatedYear() {
+        return "2019";
+    }
     public static String getColor() {
         return "Preto";
     }
@@ -21,9 +24,5 @@ public class VehicleData {
     }
     public static VehicleType getType() {
         return VehicleType.CARRO;
-    }
-
-    public static String getUpdatedLicensePlate() {
-        return "ALX1283";
     }
 }
