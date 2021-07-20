@@ -15,6 +15,9 @@ public class VehicleDto {
     private String licensePlate;
     private Integer type;
 
+    public VehicleDto() {
+    }
+
     public VehicleDto(Vehicle vehicle) {
         this.id = vehicle.getId();
         this.manufacturer = vehicle.getManufacturer();
