@@ -1,6 +1,5 @@
 package br.com.brunobrolesi.parking.service;
 
-import br.com.brunobrolesi.parking.model.Address;
 import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.model.ParkingSpace;
 import br.com.brunobrolesi.parking.repositories.ParkingRepository;
@@ -22,34 +21,32 @@ public class ParkingSpaceService {
 
 
     public ParkingSpace findByParkingIdAndParkingSpaceId(Integer parkingId, Integer parkingSpaceId) {
-        ParkingSpace obj = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
-        return obj;
+        Optional<ParkingSpace> parkingSpace = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
+        if(parkingSpace.isEmpty()) throw new IllegalArgumentException("Não encontrado");
+        return parkingSpace.get();
     }
 
     public ParkingSpace update(Integer parkingId, Integer parkingSpaceId, ParkingSpace parkingSpace) {
-        ParkingSpace entity = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
+        Optional<ParkingSpace> entity = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
 
-        if (entity == null) return null;
+        if (entity.isEmpty()) throw new IllegalArgumentException("Vaga não encontrada");
 
-        entity.setState(parkingSpace.getState());
-        entity.setType(parkingSpace.getVehicleType());
+        entity.get().setState(parkingSpace.getState());
+        entity.get().setType(parkingSpace.getVehicleType());
 
-        return parkingSpaceRepository.save(entity);
+        return parkingSpaceRepository.save(entity.get());
     }
 
-    public boolean delete(Integer parkingId, Integer parkingSpaceId) {
+    public void delete(Integer parkingId, Integer parkingSpaceId) {
         ParkingSpace parkingSpace = findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
-
-        if (parkingSpace == null) return false;
-
         parkingSpaceRepository.deleteById(parkingSpace.getId());
-        return true;
+        return;
     }
 
     public ParkingSpace insert(Integer parkingId, ParkingSpace parkingSpace) {
         Optional<Parking> parking = parkingRepository.findById(parkingId);
 
-        if (parking.isEmpty()) return null;
+        if (parking.isEmpty()) throw new IllegalArgumentException("Estabelecimento inválido");
 
         parkingSpace.setParking(parking.get());
         

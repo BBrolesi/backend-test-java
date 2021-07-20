@@ -86,68 +86,67 @@ public class ParkingController {
 
     @GetMapping("/{parkingId}/vaga/{parkingSpaceId}")
     public ResponseEntity<ParkingSpace> findParkingSpaceById(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
-        ParkingSpace obj = parkingSpaceService.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
-        if (obj != null) return ResponseEntity.ok().body(obj);
-        return ResponseEntity.notFound().build();
+        try {
+            ParkingSpace parkingSpace = parkingSpaceService.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
+            return ResponseEntity.ok().body(parkingSpace);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{parkingId}/vaga/{parkingSpaceId}")
     @Transactional
     public ResponseEntity<ParkingSpace> updateParkingSpace(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId, @RequestBody @Valid UpdateParkingSpaceForm form) {
-        ParkingSpace obj = parkingSpaceService.update(parkingId, parkingSpaceId, form.converterParkingSpace());
-        if (obj != null) {
-            return ResponseEntity.ok().body(obj);
+        try {
+            ParkingSpace parkingSpace = parkingSpaceService.update(parkingId, parkingSpaceId, form.converterParkingSpace());
+            return ResponseEntity.ok().body(parkingSpace);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{parkingId}/vaga/{parkingSpaceId}")
     @Transactional
     public ResponseEntity<Void> deleteParkingSpace(@PathVariable Integer parkingId, @PathVariable Integer parkingSpaceId) {
-        boolean result = parkingSpaceService.delete(parkingId, parkingSpaceId);
-        if (result) {
+        try {
+            parkingSpaceService.delete(parkingId, parkingSpaceId);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{parkingId}/vaga")
     @Transactional
     public ResponseEntity<ParkingSpace> insertParkingSpace(@PathVariable Integer parkingId, @RequestBody @Valid ParkingSpaceForm form) {
-        ParkingSpace obj = parkingSpaceService.insert(parkingId, form.converterParkingSpace());
-
-        if (obj == null) {
+        try {
+            ParkingSpace parkingSpace = parkingSpaceService.insert(parkingId, form.converterParkingSpace());
+            return ResponseEntity.ok().body(parkingSpace);
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok().body(obj);
-
     }
 
     @PostMapping("/{parkingId}/entrar")
     @Transactional
     public ResponseEntity<Ticket> vehicleEntryRequest(@PathVariable Integer parkingId, @RequestBody EntryTicketForm form) {
-        Ticket obj = ticketService.entry(parkingId, form.getVehicleLicensePlate());
-
-        if (obj == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            Ticket ticket = ticketService.entry(parkingId, form.getVehicleLicensePlate());
+            return ResponseEntity.ok().body(ticket);
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().build();
         }
-
-        return ResponseEntity.ok().body(obj);
-
     }
 
     @PutMapping("/{parkingId}/sair")
     @Transactional
     public ResponseEntity<Ticket> vehicleExitRequest(@PathVariable Integer parkingId, @RequestBody ExitTicketForm form) {
-        Ticket obj = ticketService.exit(parkingId, form.getId());
-
-        if (obj == null) {
+        try {
+            Ticket ticket = ticketService.exit(parkingId, form.getId());
+            return ResponseEntity.ok().body(ticket);
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok().body(obj);
-
     }
 
 }
