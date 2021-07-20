@@ -14,6 +14,8 @@ public class ParkingResumedDto {
     private String name;
     private Set<String> phones = new HashSet<>();
 
+    public ParkingResumedDto(){}
+
     public ParkingResumedDto (Parking parking) {
         this.id = parking.getId();
         this.cnpj = parking.getCnpj();
