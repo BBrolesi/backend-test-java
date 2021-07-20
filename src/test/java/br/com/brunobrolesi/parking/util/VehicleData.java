@@ -5,10 +5,10 @@ import br.com.brunobrolesi.parking.model.VehicleType;
 public class VehicleData {
 
     public static String getManufacturer() {
-        return "Ford";
+        return "ford";
     }
     public static String getModel() {
-        return "Fusion";
+        return "fusion";
     }
     public static String getYear() {
         return "2018";
@@ -17,10 +17,10 @@ public class VehicleData {
         return "2019";
     }
     public static String getColor() {
-        return "Preto";
+        return "preto";
     }
     public static String getLicensePlate() {
-        return "ALX1282";
+        return "alx1282";
     }
     public static VehicleType getType() {
         return VehicleType.CARRO;
