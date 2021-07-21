@@ -6,7 +6,6 @@ import br.com.brunobrolesi.parking.model.Vehicle;
 import br.com.brunobrolesi.parking.repositories.VehicleRepository;
 import br.com.brunobrolesi.parking.util.UpdateVehicleFormCreator;
 import br.com.brunobrolesi.parking.util.VehicleCreator;
-import br.com.brunobrolesi.parking.util.VehicleFormCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,22 +69,6 @@ public class VehicleControllerIT {
         Assertions.assertThat(returned.getType()).isEqualTo(expected.getType());
     }
 
-//    @Test
-//    @DisplayName("create returns the created vehicle when successful")
-//    void create_ReturnsTheCreatedVehicle_WhenSuccessful() {
-//        VehicleDto expected = new VehicleDto(VehicleCreator.createValidVehicle());
-//        VehicleDto returned = testRestTemplate.postForObject("/veiculos", VehicleFormCreator.createVehicleForm(), VehicleDto.class);
-//
-//        Assertions.assertThat(returned).isNotNull();
-//        Assertions.assertThat(returned.getId()).isNotNull();
-//        Assertions.assertThat(returned.getManufacturer()).isEqualTo(expected.getManufacturer());
-//        Assertions.assertThat(returned.getModel()).isEqualTo(expected.getModel());
-//        Assertions.assertThat(returned.getYear()).isEqualTo(expected.getYear());
-//        Assertions.assertThat(returned.getColor()).isEqualTo(expected.getColor());
-//        Assertions.assertThat(returned.getLicensePlate()).isEqualTo(expected.getLicensePlate());
-//        Assertions.assertThat(returned.getType()).isEqualTo(expected.getType());
-//    }
-
     @Test
     @DisplayName("delete returns empty body when successful")
     void delete_ReturnsEmptyBody_WhenSuccessful() {
@@ -117,38 +100,11 @@ public class VehicleControllerIT {
     }
 
     @Test
-    @DisplayName("list returns empty body and 204 status code when list is empty")
-    void list_ReturnsEmptyBody_WhenNotFound() {
-        ResponseEntity <List<VehicleDto>> returned = testRestTemplate.exchange("/veiculos", HttpMethod.GET, null, new ParameterizedTypeReference<List<VehicleDto>>() {});
-
-        Assertions.assertThat(returned.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        Assertions.assertThat(returned.getBody()).isNull();
-    }
-
-    @Test
-    @DisplayName("listById returns empty body and 404 status code when vehicle not found")
-    void listById_ReturnsEmptyBody_WhenNotFound() {
-        ResponseEntity <VehicleDto> returned = testRestTemplate.exchange("/veiculos/{id}", HttpMethod.GET, null, new ParameterizedTypeReference<VehicleDto>() {}, 1);
-
-        Assertions.assertThat(returned.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        Assertions.assertThat(returned.getBody()).isNull();
-    }
-
-    @Test
     @DisplayName("create returns 400 status code when fails")
     void create_ReturnsEmptyBody_WhenFails() {
         ResponseEntity <VehicleDto> returned = testRestTemplate.postForEntity("/veiculos", Void.class, VehicleDto.class);
 
         Assertions.assertThat(returned.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    @DisplayName("delete returns empty body and 404 status code when didn't found the vehicle")
-    void delete_ReturnsEmptyBody_WhenNotFound() {
-        ResponseEntity <Void> returned = testRestTemplate.exchange("/veiculos/{id}", HttpMethod.DELETE, null, Void.class, 12);
-
-        Assertions.assertThat(returned.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        Assertions.assertThat(returned.getBody()).isNull();
     }
 
     @Test

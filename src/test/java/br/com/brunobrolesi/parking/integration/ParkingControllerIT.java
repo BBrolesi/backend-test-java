@@ -1,21 +1,14 @@
 package br.com.brunobrolesi.parking.integration;
 
-import br.com.brunobrolesi.parking.controller.dto.ParkingDto;
 import br.com.brunobrolesi.parking.controller.dto.ParkingResumedDto;
-import br.com.brunobrolesi.parking.controller.dto.VehicleDto;
-import br.com.brunobrolesi.parking.model.*;
+import br.com.brunobrolesi.parking.model.City;
+import br.com.brunobrolesi.parking.model.Parking;
+import br.com.brunobrolesi.parking.model.State;
 import br.com.brunobrolesi.parking.repositories.*;
-import br.com.brunobrolesi.parking.service.AddressService;
-import br.com.brunobrolesi.parking.service.ParkingSpaceService;
 import br.com.brunobrolesi.parking.util.ParkingCreator;
-import br.com.brunobrolesi.parking.util.ParkingFormCreator;
-import br.com.brunobrolesi.parking.util.UpdateParkingFormCreator;
-import br.com.brunobrolesi.parking.util.VehicleCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

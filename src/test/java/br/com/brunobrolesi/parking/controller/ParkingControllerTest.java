@@ -12,17 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 class ParkingControllerTest {
@@ -125,66 +123,48 @@ class ParkingControllerTest {
     }
 
     @Test
-    @DisplayName("ListParkings returns empty body and 404 status code when list is empty")
-    void listParkings_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("ListParkings must throw a exception when list is empty")
+    void listParkings_ThrowsException_WhenNotFound() {
         BDDMockito.when(parkingService.findAll()).thenThrow(RuntimeException.class);
 
-        List<ParkingResumedDto> returned = parkingController.listParkings().getBody();
-        HttpStatus statusCode = parkingController.listParkings().getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> parkingController.listParkings());
     }
 
     @Test
-    @DisplayName("listParkingById returns empty body and 404 status code when didn't found the parking")
-    void listParkingById_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("listParkingById must throw a exception when didn't found the parking")
+    void listParkingById_ThrowsException_WhenNotFound() {
         BDDMockito.when(parkingService.findById(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        ParkingDto returned = parkingController.listParkingById(1).getBody();
-        HttpStatus statusCode = parkingController.listParkingById(1).getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> parkingController.listParkingById(1));
     }
 
     @Test
-    @DisplayName("deleteParking returns empty body and 404 status code when didn't found the parking")
-    void deleteParking_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("deleteParking must throw a exception when didn't found the parking")
+    void deleteParking_ThrowsException_WhenNotFound() {
         BDDMockito.doThrow(RuntimeException.class).when(parkingService).delete(ArgumentMatchers.any());
 
-        Void returned = parkingController.deleteParking(1).getBody();
-        HttpStatus statusCode = parkingController.deleteParking(1).getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> parkingController.deleteParking(1));
     }
 
     @Test
-    @DisplayName("createParking returns empty body and 422 status code when fails")
-    void createParking_ReturnsEmptyBody_WhenFails(){
+    @DisplayName("createParking must throw a exception when fails")
+    void createParking_ThrowsException_WhenFails(){
         BDDMockito.when(parkingService.create(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        ParkingDto returned = parkingController.createParking(ParkingFormCreator.createParkingForm()).getBody();
-        HttpStatus statusCode = parkingController.createParking(ParkingFormCreator.createParkingForm()).getStatusCode();
-
-        Assertions.assertThat(statusCode).isNotNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(422);
-        Assertions.assertThat(returned).isNull();
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> parkingController.createParking(ParkingFormCreator.createParkingForm()));
     }
 
     @Test
-    @DisplayName("updateParking returns empty body and 422 status code when fails")
-    void updateParking_ReturnsEmptyBody_WhenFails(){
+    @DisplayName("updateParking must throw a exception when fails")
+    void updateParking_ThrowsException_WhenFails(){
         BDDMockito.when(parkingService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        ParkingDto returned = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getBody();
-        HttpStatus statusCode = parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()).getStatusCode();
-
-        Assertions.assertThat(statusCode).isNotNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(422);
-
-        Assertions.assertThat(returned).isNull();
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> parkingController.updateParking(1, UpdateParkingFormCreator.createUpdateParkingForm()));
     }
 
 }
