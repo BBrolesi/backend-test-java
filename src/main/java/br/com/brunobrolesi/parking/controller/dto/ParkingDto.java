@@ -13,7 +13,7 @@ public class ParkingDto {
     private Integer id;
     private String cnpj;
     private String name;
-    private List<Address> addresses = new ArrayList<>();
+    private Address address;
     private Set<String> phones = new HashSet<>();
     private Integer carSpaces;
     private Integer motorcycleSpaces;
@@ -25,7 +25,7 @@ public class ParkingDto {
         this.id = parking.getId();
         this.cnpj = parking.getCnpj();
         this.name = parking.getName();
-        this.addresses = parking.getAddresses();
+        this.address = parking.getAddress();
         this.phones = parking.getPhones();
         this.parkingSpaces = parking.getParkingSpaces();
 
@@ -35,84 +35,44 @@ public class ParkingDto {
         this.freeMotorcycleSpaces = parking.getFreeVehicleSpaceQuantity(VehicleType.MOTO);
     }
 
-    public List<ParkingSpace> getParkingSpaces() {
-        return parkingSpaces;
-    }
-
-    public void setParkingSpaces(List<ParkingSpace> parkingSpaces) {
-        this.parkingSpaces = parkingSpaces;
-    }
-
-    public Integer getCarSpaces() {
-        return carSpaces;
-    }
-
-    public void setCarSpaces(Integer carSpaces) {
-        this.carSpaces = carSpaces;
-    }
-
-    public Integer getMotorcycleSpaces() {
-        return motorcycleSpaces;
-    }
-
-    public void setMotorcycleSpaces(Integer motorcycleSpaces) {
-        this.motorcycleSpaces = motorcycleSpaces;
-    }
-
-    public Integer getFreeCarSpaces() {
-        return freeCarSpaces;
-    }
-
-    public void setFreeCarSpaces(Integer freeCarSpaces) {
-        this.freeCarSpaces = freeCarSpaces;
-    }
-
-    public Integer getFreeMotorcycleSpaces() {
-        return freeMotorcycleSpaces;
-    }
-
-    public void setFreeMotorcycleSpaces(Integer freeMotorcycleSpaces) {
-        this.freeMotorcycleSpaces = freeMotorcycleSpaces;
-    }
-
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getCnpj() {
         return cnpj;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public Address getAddress() {
+        return address;
     }
 
     public Set<String> getPhones() {
         return phones;
     }
 
-    public void setPhones(Set<String> phones) {
-        this.phones = phones;
+    public Integer getCarSpaces() {
+        return carSpaces;
+    }
+
+    public Integer getMotorcycleSpaces() {
+        return motorcycleSpaces;
+    }
+
+    public Integer getFreeCarSpaces() {
+        return freeCarSpaces;
+    }
+
+    public Integer getFreeMotorcycleSpaces() {
+        return freeMotorcycleSpaces;
+    }
+
+    public List<ParkingSpace> getParkingSpaces() {
+        return parkingSpaces;
     }
 
     public static List<ParkingDto> converter(List<Parking> parkings) {

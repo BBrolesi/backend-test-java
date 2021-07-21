@@ -3,39 +3,24 @@ package br.com.brunobrolesi.parking.controller.dto;
 import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.model.VehicleType;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ParkingResumedDto {
     private Integer id;
     private String cnpj;
     private String name;
-    private Integer carSpaces;
-    private Integer motorcycleSpaces;
+    private Set<String> phones = new HashSet<>();
+
+    public ParkingResumedDto(){}
 
     public ParkingResumedDto (Parking parking) {
         this.id = parking.getId();
         this.cnpj = parking.getCnpj();
         this.name = parking.getName();
-
-        this.carSpaces =  parking.getVehicleSpaceQuantity(VehicleType.CARRO);
-        this.motorcycleSpaces = parking.getVehicleSpaceQuantity(VehicleType.MOTO);
-    }
-
-    public Integer getCarSpaces() {
-        return carSpaces;
-    }
-
-    public void setCarSpaces(Integer carSpaces) {
-        this.carSpaces = carSpaces;
-    }
-
-    public Integer getMotorcycleSpaces() {
-        return motorcycleSpaces;
-    }
-
-    public void setMotorcycleSpaces(Integer motorcycleSpaces) {
-        this.motorcycleSpaces = motorcycleSpaces;
+        this.phones = parking.getPhones();
     }
 
     public Integer getId() {
@@ -62,7 +47,17 @@ public class ParkingResumedDto {
         this.name = name;
     }
 
+    public Set<String> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(Set<String> phones) {
+        this.phones = phones;
+    }
+
     public static List<ParkingResumedDto> converter(List<Parking> parkings) {
         return parkings.stream().map(ParkingResumedDto::new).collect(Collectors.toList());
     }
+
+
 }

@@ -1,5 +1,6 @@
 package br.com.brunobrolesi.parking.controller.form;
 
+import br.com.brunobrolesi.parking.model.Address;
 import br.com.brunobrolesi.parking.model.Parking;
 import br.com.brunobrolesi.parking.model.ParkingSpace;
 import br.com.brunobrolesi.parking.model.VehicleType;
@@ -15,7 +16,7 @@ public class UpdateParkingForm {
 
     @NotEmpty
     private String name;
-
+    private UpdateAddressForm address;
     private String phone1;
     private String phone2;
 
@@ -43,12 +44,12 @@ public class UpdateParkingForm {
         this.phone2 = phone2;
     }
 
-    private List<ParkingSpace> generateParkingSpaces(VehicleType type, int number, Parking parking) {
-        List<ParkingSpace> parkingSpaces = new ArrayList<>();
-        for (int i = 0; i < number; i++) {
-            parkingSpaces.add(new ParkingSpace(null, type, parking));
-        }
-        return parkingSpaces;
+    public UpdateAddressForm getAddress() {
+        return address;
+    }
+
+    public void setAddress(UpdateAddressForm address) {
+        this.address = address;
     }
 
     public Parking converterParking() {
@@ -57,7 +58,12 @@ public class UpdateParkingForm {
                 null,
                 this.name
         );
-        parking.getPhones().addAll(Arrays.asList(phone1,phone2));
+        Address address = this.address.converterAddress();
+        address.setParking(parking);
+        parking.setAddress(address);
+        parking.addPhone(phone1);
+        parking.addPhone(phone2);
+
         return  parking;
     }
 }

@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ParkingSpaceRepository extends JpaRepository <ParkingSpace, Integer> {
 
     @Query("select a from ParkingSpace a where parking_id = ?1 and a.id = ?2")
-    ParkingSpace findByParkingIdAndParkingSpaceId(Integer parkingId, Integer parkingSpaceId);
+    Optional<ParkingSpace> findByParkingIdAndParkingSpaceId(Integer parkingId, Integer parkingSpaceId);
 }

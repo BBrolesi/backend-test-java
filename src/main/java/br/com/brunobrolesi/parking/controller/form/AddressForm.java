@@ -3,11 +3,17 @@ package br.com.brunobrolesi.parking.controller.form;
 import br.com.brunobrolesi.parking.model.Address;
 import br.com.brunobrolesi.parking.model.City;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class AddressForm {
 
+    @NotNull @NotEmpty
     private String street;
+    @NotNull @NotEmpty
     private String number;
     private String address_2;
+    @NotNull
     private Integer cityId;
 
     public String getStreet() {

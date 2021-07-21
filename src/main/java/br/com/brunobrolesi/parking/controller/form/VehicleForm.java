@@ -5,6 +5,7 @@ import br.com.brunobrolesi.parking.model.VehicleType;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class VehicleForm {
 
@@ -16,7 +17,9 @@ public class VehicleForm {
     private String year;
     @NotNull @NotEmpty
     private String color;
-    @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
+    @Pattern(regexp = "[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}|[A-Z0-9]{7}")
     private String licensePlate;
     @NotNull
     private Integer type;

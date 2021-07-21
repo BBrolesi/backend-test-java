@@ -25,18 +25,12 @@ public class Vehicle implements Serializable {
     }
 
     public Vehicle(Integer id, String manufacturer, String model, String year, String color, String licensePlate, VehicleType type) {
-        if(!licensePlate.toUpperCase(Locale.ENGLISH).matches("[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}|[A-Z0-9]{7}")) {
-            throw new IllegalArgumentException("Placa inválida: " + licensePlate);
-        }
-        if(!year.matches("[0-9]{4}") || (Integer.parseInt(year) < 1886 || Integer.parseInt(year) > LocalDate.now().getYear() + 1)) {
-            throw new IllegalArgumentException("Ano inválido: " + year);
-        }
         this.id = id;
-        this.manufacturer = manufacturer.toLowerCase(Locale.ENGLISH);
-        this.model = model.toLowerCase(Locale.ENGLISH);
+        this.manufacturer = manufacturer;
+        this.model = model;
         this.year = year;
-        this.color = color.toLowerCase(Locale.ENGLISH);
-        this.licensePlate = licensePlate.toUpperCase(Locale.ENGLISH);
+        this.color = color;
+        this.licensePlate = licensePlate;
         this.type = type.getId();
     }
 
@@ -77,9 +71,6 @@ public class Vehicle implements Serializable {
     }
 
     public void setYear(String year) {
-        if(!year.matches("[0-9]{4}") || (Integer.parseInt(year) < 1886 || Integer.parseInt(year) > LocalDate.now().getYear() + 1)) {
-            throw new IllegalArgumentException("Ano inválido: " + year);
-        }
         this.year = year;
     }
 
@@ -88,9 +79,6 @@ public class Vehicle implements Serializable {
     }
 
     public void setLicensePlate(String licensePlate) {
-        if(!licensePlate.toUpperCase(Locale.ENGLISH).matches("[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}|[A-Z0-9]{7}")) {
-            throw new IllegalArgumentException("Placa inválida: " + licensePlate);
-        }
         this.licensePlate = licensePlate.toUpperCase(Locale.ENGLISH);
     }
 

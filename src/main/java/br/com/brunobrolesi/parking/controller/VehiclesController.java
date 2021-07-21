@@ -7,6 +7,7 @@ import br.com.brunobrolesi.parking.controller.form.UpdateVehicleForm;
 import br.com.brunobrolesi.parking.controller.form.VehicleForm;
 import br.com.brunobrolesi.parking.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,52 +26,56 @@ public class VehiclesController {
     private VehicleService service;
 
     @GetMapping
-    public List<VehicleDto> listVehicles() {
-        List<Vehicle> vehicles = service.findAll();
-        return VehicleDto.converter(vehicles);
+    public ResponseEntity<List<VehicleDto>> list() {
+        try {
+            List<Vehicle> vehicles = service.findAll();
+            return ResponseEntity.ok().body(VehicleDto.converter(vehicles));
+        } catch (Exception exception) {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleDto> findVehicleById(@PathVariable Integer id) {
-        Optional<Vehicle> obj = Optional.ofNullable(service.findById(id));
-        if(obj.isPresent())
-        {
-            return ResponseEntity.ok().body(new VehicleDto(obj.get()));
-        }
+    public ResponseEntity<VehicleDto> listById(@PathVariable Integer id) {
+        try {
+            Vehicle vehicle = service.findById(id);
+            return ResponseEntity.ok().body(new VehicleDto(vehicle));
+        } catch (Exception exception){
             return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<VehicleDto> registerVehicle(@RequestBody @Valid VehicleForm form) {
-        Vehicle vehicle = form.converter();
-        service.insert(vehicle);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequestUri().path("/{id}").buildAndExpand(vehicle.getId()).toUri();
-        return ResponseEntity.created(uri).body(new VehicleDto(vehicle));
+    public ResponseEntity<VehicleDto> create(@RequestBody @Valid VehicleForm form) {
+        try {
+            VehicleDto created = new VehicleDto(service.create(form.converter()));
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteVehicle(@PathVariable Integer id) {
-        Optional<Vehicle> optional = Optional.ofNullable(service.findById(id));
-        if (optional.isPresent())
-        {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        try {
             service.delete(id);
             return ResponseEntity.ok().build();
+        } catch (Exception exception) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<VehicleDto> updateVehicle(@PathVariable Integer id, @RequestBody @Valid UpdateVehicleForm form)
+    public ResponseEntity<VehicleDto> update(@PathVariable Integer id, @RequestBody @Valid UpdateVehicleForm form)
     {
-            Optional<Vehicle> optional = Optional.ofNullable(service.update(id, form.converterVehicle()));
-
-            if(optional.isPresent()) {
-                return ResponseEntity.ok().body(new VehicleDto(optional.get()));
-            }
-        return ResponseEntity.notFound().build();
+        try {
+            VehicleDto vehicle = new VehicleDto(service.update(id, form.converterVehicle()));
+            return ResponseEntity.ok().body(vehicle);
+        } catch (Exception exception) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 }
