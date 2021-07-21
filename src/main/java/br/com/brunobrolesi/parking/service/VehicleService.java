@@ -19,7 +19,7 @@ public class VehicleService {
     public List<Vehicle> findAll() {
         List <Vehicle> vehicleList = repository.findAll();
 
-        if (vehicleList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+        if (vehicleList.isEmpty()) throw new RuntimeException("Nenhum resultado encontrado");
 
         return vehicleList;
     }
@@ -27,7 +27,7 @@ public class VehicleService {
     public Vehicle findById(Integer id) {
         Optional<Vehicle> optional = repository.findById(id);
 
-        if(optional.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+        if(optional.isEmpty()) throw new IllegalArgumentException("O id: " + id + " não é valido");
 
         return optional.get();
     }
@@ -35,7 +35,7 @@ public class VehicleService {
     public Vehicle create(Vehicle obj) {
         Optional<Vehicle> optional = repository.findByLicensePlate(obj.getLicensePlate());
 
-        if(optional.isPresent()) throw new IllegalArgumentException("Placa já cadastrada");
+        if(optional.isPresent()) throw new IllegalArgumentException("A placa: " + obj.getLicensePlate() + " já foi cadastrada");
 
         return repository.save(obj);
     }
@@ -52,7 +52,7 @@ public class VehicleService {
         Optional<Vehicle> entity = repository.findById(id);
 
         if (entity.isEmpty()){
-            throw new IllegalArgumentException("Este id é inválido");
+            throw new IllegalArgumentException("O id: " + id + " não é valido");
         }
 
         updateData(entity.get(), obj);

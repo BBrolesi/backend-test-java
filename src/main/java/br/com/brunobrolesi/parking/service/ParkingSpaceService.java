@@ -22,14 +22,14 @@ public class ParkingSpaceService {
 
     public ParkingSpace findByParkingIdAndParkingSpaceId(Integer parkingId, Integer parkingSpaceId) {
         Optional<ParkingSpace> parkingSpace = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
-        if(parkingSpace.isEmpty()) throw new IllegalArgumentException("Não encontrado");
+        if(parkingSpace.isEmpty()) throw new IllegalArgumentException("A combinação de ids: " + parkingId + " e " + parkingSpaceId + " não é valida");
         return parkingSpace.get();
     }
 
     public ParkingSpace update(Integer parkingId, Integer parkingSpaceId, ParkingSpace parkingSpace) {
         Optional<ParkingSpace> entity = parkingSpaceRepository.findByParkingIdAndParkingSpaceId(parkingId, parkingSpaceId);
 
-        if (entity.isEmpty()) throw new IllegalArgumentException("Vaga não encontrada");
+        if (entity.isEmpty()) throw new IllegalArgumentException("A combinação de ids: " + parkingId + " e " + parkingSpaceId + " não é valida");
 
         entity.get().setState(parkingSpace.getState());
         entity.get().setType(parkingSpace.getVehicleType());
@@ -46,7 +46,7 @@ public class ParkingSpaceService {
     public ParkingSpace insert(Integer parkingId, ParkingSpace parkingSpace) {
         Optional<Parking> parking = parkingRepository.findById(parkingId);
 
-        if (parking.isEmpty()) throw new IllegalArgumentException("Estabelecimento inválido");
+        if (parking.isEmpty()) throw new IllegalArgumentException("O id: " + parkingId + " não é valido");
 
         parkingSpace.setParking(parking.get());
         
