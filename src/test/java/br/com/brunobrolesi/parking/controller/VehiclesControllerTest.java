@@ -142,65 +142,48 @@ class VehiclesControllerTest {
     }
 
     @Test
-    @DisplayName("list returns empty body and 204 status code when list is empty")
-    void list_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("list must throw a exception when list is empty")
+    void list_ThrowsException_WhenNotFound() {
         BDDMockito.when(vehicleService.findAll()).thenThrow(RuntimeException.class);
 
-        List<VehicleDto> returned = vehiclesController.list().getBody();
-        HttpStatus statusCode = vehiclesController.list().getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(204);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> vehiclesController.list());
     }
 
     @Test
-    @DisplayName("listById returns empty body and 404 status code when vehicle not found")
-    void listById_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("listById must throw a exception when vehicle not found")
+    void listById_ThrowsException_WhenNotFound() {
         BDDMockito.when(vehicleService.findById(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        VehicleDto returned = vehiclesController.listById(1).getBody();
-        HttpStatus statusCode = vehiclesController.listById(1).getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> vehiclesController.listById(1));
     }
 
     @Test
-    @DisplayName("create returns empty body and 422 status code when fails")
-    void create_ReturnsEmptyBody_WhenFails() {
+    @DisplayName("create must throw a exception when fails")
+    void create_ThrowsException_WhenFails() {
         BDDMockito.when(vehicleService.create(ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        VehicleDto returned = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getBody();
-        HttpStatus statusCode = vehiclesController.create(VehicleFormCreator.createVehicleForm()).getStatusCode();
-
-        Assertions.assertThat(statusCode).isNotNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(422);
-        Assertions.assertThat(returned).isNull();
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> vehiclesController.create(VehicleFormCreator.createVehicleForm()));
     }
 
     @Test
-    @DisplayName("delete returns empty body and 404 status code when didn't found the vehicle")
-    void delete_ReturnsEmptyBody_WhenNotFound() {
+    @DisplayName("delete must throw a exception when didn't found the vehicle")
+    void delete_ThrowsException_WhenNotFound() {
         BDDMockito.doThrow(RuntimeException.class).when(vehicleService).delete(ArgumentMatchers.any());
 
-        Void returned = vehiclesController.delete(1).getBody();
-        HttpStatus statusCode = vehiclesController.delete(1).getStatusCode();
-
-        Assertions.assertThat(returned).isNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(404);
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> vehiclesController.delete(1));
     }
 
     @Test
-    @DisplayName("update returns empty body and 422 status code when fails")
-    void update_ReturnsEmptyBody_WhenFails() {
+    @DisplayName("update must throw a exception when fails")
+    void update_ThrowsException_WhenFails() {
         BDDMockito.when(vehicleService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(RuntimeException.class);
 
-        VehicleDto returned = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getBody();
-        HttpStatus statusCode = vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()).getStatusCode();
-
-        Assertions.assertThat(statusCode).isNotNull();
-        Assertions.assertThat(statusCode.value()).isEqualTo(422);
-        Assertions.assertThat(returned).isNull();
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> vehiclesController.update(1, UpdateVehicleFormCreator.createVehicleForm()));
     }
 
 
