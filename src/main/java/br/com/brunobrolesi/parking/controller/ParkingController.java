@@ -98,10 +98,10 @@ public class ParkingController {
             return ResponseEntity.ok().body(ticket);
     }
 
-    @PutMapping("/{parkingId}/sair")
+    @PutMapping("/{parkingId}/sair/{ticketId}")
     @Transactional
-    public ResponseEntity<Ticket> vehicleExitRequest(@PathVariable Integer parkingId, @RequestBody ExitTicketForm form) {
-            Ticket ticket = ticketService.exit(parkingId, form.getId());
+    public ResponseEntity<Ticket> vehicleExitRequest(@PathVariable Integer parkingId, @PathVariable Integer ticketId) {
+            Ticket ticket = ticketService.exit(parkingId, ticketId);
             return ResponseEntity.ok().body(ticket);
     }
 
