@@ -28,7 +28,7 @@ public class ParkingService {
     public List<Parking> findAll() {
         List<Parking> parkingList = parkingRepository.findAll();
 
-        if (parkingList.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+        if (parkingList.isEmpty()) throw new RuntimeException("Nenhum resultado encontrado");
 
         return parkingList;
     }
@@ -36,7 +36,7 @@ public class ParkingService {
     public Parking findById(Integer id) {
         Optional<Parking> entity = parkingRepository.findById(id);
 
-        if (entity.isEmpty()) throw new EmptyResultDataAccessException("Nenhum resultado encontrado", 1);
+        if (entity.isEmpty()) throw new IllegalArgumentException("O id: " + id + " não é valido");
 
         return entity.get();
     }
@@ -52,7 +52,7 @@ public class ParkingService {
     public void delete(Integer id) {
         Optional<Parking> entity = parkingRepository.findById(id);
 
-        if (entity.isEmpty()) throw new IllegalArgumentException("Este id não é valido");
+        if (entity.isEmpty()) throw new IllegalArgumentException("O id: " + id + " não é valido");
 
         parkingRepository.deleteById(id);
     }
@@ -60,7 +60,7 @@ public class ParkingService {
     public Parking update(Integer id, Parking obj) {
         Optional<Parking> entity = parkingRepository.findById(id);
 
-        if (entity.isEmpty()) throw new IllegalArgumentException("Este id não é valido");
+        if (entity.isEmpty()) throw new IllegalArgumentException("O id: " + id + " não é valido");
 
         updateData(entity.get(), obj);
         return parkingRepository.save(entity.get());
