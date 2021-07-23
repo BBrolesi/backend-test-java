@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class TicketService {
         if(ticket.isEmpty()) throw new IllegalArgumentException("O id: " + id + " não é valido");
         if(ticket.get().getExitTime() != null) throw new IllegalArgumentException("O ticket informado já foi utilizado");
 
-        ticket.get().setExitTime(LocalDate.now());
+        ticket.get().setExitTime(LocalDateTime.now());
         ticket.get().getParkingSpace().setState(ParkingSpaceState.FREE);
 
         return ticketRepository.save(ticket.get());

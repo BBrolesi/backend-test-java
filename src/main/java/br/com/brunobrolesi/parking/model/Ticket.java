@@ -2,6 +2,8 @@ package br.com.brunobrolesi.parking.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
@@ -19,9 +21,12 @@ public class Ticket {
     @JoinColumn(name="parkingSpace_id")
     private ParkingSpace parkingSpace;
 
-    private LocalDate entryTime;
+    private String entryTime;
 
-    private LocalDate exitTime;
+    private String exitTime;
+
+    @Transient
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public Ticket() {}
 
@@ -29,7 +34,7 @@ public class Ticket {
         this.id = id;
         this.vehicle = vehicle;
         this.parkingSpace = parkingSpace;
-        this.entryTime = LocalDate.now();
+        this.entryTime = LocalDateTime.now().format(this.formatter);
     }
 
     public Integer getId() {
@@ -56,20 +61,20 @@ public class Ticket {
         this.parkingSpace = parkingSpace;
     }
 
-    public LocalDate getEntryTime() {
+    public String getEntryTime() {
         return entryTime;
     }
 
-    public void setEntryTime(LocalDate entryTime) {
-        this.entryTime = entryTime;
+    public void setEntryTime(LocalDateTime entryTime) {
+        this.entryTime = entryTime.format(this.formatter);
     }
 
-    public LocalDate getExitTime() {
+    public String getExitTime() {
         return exitTime;
     }
 
-    public void setExitTime(LocalDate exitTime) {
-        this.exitTime = exitTime;
+    public void setExitTime(LocalDateTime exitTime) {
+        this.exitTime = exitTime.format(this.formatter);
     }
 
     @Override
